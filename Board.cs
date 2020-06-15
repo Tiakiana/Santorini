@@ -119,11 +119,11 @@ namespace Santorini
         private List<PawnMove> GetMovesInAllDirections()
         {
             List<PawnMove> moves = new List<PawnMove>() {
-            /*new PawnMove(-1,1),
+            new PawnMove(-1,1),
             new PawnMove(-1,-1),
-           new PawnMove(1,1),
-            new PawnMove(1,-1),*/
-                new PawnMove(-1,0),
+            new PawnMove(1,1),
+            new PawnMove(1,-1),
+            new PawnMove(-1,0),
             new PawnMove(0,1),
             new PawnMove(1,0),
             new PawnMove(0,-1),

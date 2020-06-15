@@ -87,9 +87,6 @@ namespace Santorini
             {
                 FeedForward(HiddenLayers[i]);
             }
-
-
-
         }
 
 
@@ -125,13 +122,12 @@ namespace Santorini
             }
         }
 
-
         public void GetInputs(int[,,] board, int playernum)
         {
             int neuronCount = 0;
             for (int x = 0; x < 25; x++)
             {
-                
+
                 for (int y = 0; y < 25; y++)
                 {
                     //Hvad Niveau er vi på?
@@ -156,8 +152,8 @@ namespace Santorini
                     {
                         InputLayer.Neurons[neuronCount + 5] = 0;
                     }
-                   //Er det fjenden?
-                    if ( board[x, y, 1] != playernum && board[x,y,1] != 0)
+                    //Er det fjenden?
+                    if (board[x, y, 1] != playernum && board[x, y, 1] != 0)
                     {
                         InputLayer.Neurons[neuronCount + 6] = 1;
                     }
@@ -165,11 +161,12 @@ namespace Santorini
                     {
                         InputLayer.Neurons[neuronCount + 6] = 0;
                     }
-                   
+
                     neuronCount += 7;
                 }
             }
         }
+
 
 
 

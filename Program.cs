@@ -216,7 +216,12 @@ namespace Santorini
 
         static void Main(string[] args)
         {
-            PlaySantorini();
+            Board b = new Board();
+            SantoriniNAN nn = new SantoriniNAN();
+            nn.FeedForward(b.BoardState,1);
+
+
+            //PlaySantorini();
         }
 
         public static void PlaySantorini()
