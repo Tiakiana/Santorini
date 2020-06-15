@@ -45,13 +45,8 @@ namespace Santorini
             return moves.OrderByDescending(x => x.Utility).ThenByDescending(x => rnd.Next(0, 10000)).ToList()[0];
         }
     }
-    public class SaveFile
-    {
-        public static void ConvertToSaveFile(SantoriniQLearn ql)
-        {
-            
-        }
-    }
+
+
     public class Program
     {
         public void PlayTicTacToe()
@@ -223,7 +218,7 @@ namespace Santorini
         {
             PlaySantorini();
         }
-        
+
         public static void PlaySantorini()
         {
             Program p = new Program();
@@ -276,10 +271,15 @@ namespace Santorini
                     ProgressBarMine += "\n \nPlayer1Wins: " + winsIncremental.Player1 + "\nPlayer2Wins: " + winsIncremental.Player2 + "\nNew Board States: " + MathF.Abs(winsIncremental.Draw - quintin1.Policies.Count);
                     Console.WriteLine(ProgressBarMine);
                     Console.WriteLine("Exploration chance: " + quintin1.ExplorationChance);
-                   
+
                     //Hvor mange nye stadier skal vi over før vi kan gå igang med at spille?
-                    if (MathF.Abs(winsIncremental.Draw - quintin1.Policies.Count) < 1500)
+                    if (MathF.Abs(winsIncremental.Draw - quintin1.Policies.Count) < 500000)
                     {
+                        ProgressBarMine += "\nsaving";
+                        //p.SaveKnowledge(quintin1);
+                        ProgressBarMine += "\n Done saving";
+
+
                         doneExploring = true;
                     }
 
@@ -403,7 +403,7 @@ namespace Santorini
             Console.WriteLine("Player 2 Wins:" + wins.Player2);
             Console.WriteLine("Board states known: " + quintin1.Policies.Count);
             Console.WriteLine("Press any key");
-            p.SaveKnowledge(quintin1);
+          //  p.SaveKnowledge(quintin1);
             Console.ReadKey();
 
             for (int hy = 0; hy < 1000; hy++)
@@ -437,9 +437,8 @@ namespace Santorini
 
 
 
-                        b.MakeMove(randy.TakeTurn(b.GetAvailableMoveForPlayer(player1), b), player1.Pawns[0]);
+                        b.MakeMove(quintin1.TakeTurn(b, player1), player1.Pawns[0]);   //b.GetAvailableMoveForPlayer(player1), b); ; ;, player1.Pawns[0]);
                         b.DrawBoard();
-                        Console.ReadKey();
 
                         foreach (Pawn item in player1.Pawns)
                         {
@@ -471,9 +470,32 @@ namespace Santorini
                         else
                         {
                             //                      MAKE DET MOVE MOND!
-                            b.MakeMove(quintin1.TakeTurn(b, player2), player2.Pawns[0]);
-                            b.DrawBoard();
-                            Console.ReadKey();
+                            Console.WriteLine("Make Move Player :D");
+                            PawnMove playermove = new PawnMove();
+
+
+                            List<PawnMove> liste = b.GetAvailableMoveForPlayer(player2);
+                        A:
+                            int count = 0;
+                            foreach (var item in liste)
+                            {
+                                Console.WriteLine(count + ": " + item.ToString());
+                                count++;
+                            }
+                            int choose = int.Parse(Console.ReadLine());
+                            try
+                            {
+                                b.MakeMove(liste[choose], player2.Pawns[0]);
+                            }
+                            catch (Exception)
+                            {
+                                goto A;
+                            }
+
+
+                            //b.MakeMove(quintin1.TakeTurn(b, player2), player2.Pawns[0]);
+                            //b.DrawBoard();
+                            //Console.ReadKey();
 
                             foreach (Pawn item in player2.Pawns)
                             {
@@ -484,7 +506,6 @@ namespace Santorini
                                     wins.Player2++;
                                     winsIncremental.Player2++;
 
-                                    quintin1.Reward(1);
 
                                     break;
                                 }
@@ -493,20 +514,49 @@ namespace Santorini
                     }
 
                 }
-                //   b.DrawBoard();
+                b.DrawBoard();
+                Console.ReadLine();
+
+            }
+        }
+        public class DictObject
+        {
+            public string BoardState;
+            public List<PawnMove> Moves = new List<PawnMove>();
+            public DictObject() { }
+            public DictObject(string boardState, List<PawnMove> moves)
+            {
+
+                BoardState = boardState;
+                Moves = moves;
+            }
+        }
+        public class SaveItem
+        {
+            public List<DictObject> SavedItem;
+            public SaveItem() { }
+            public SaveItem(List<DictObject> d)
+            {
+                SavedItem = d;
             }
         }
 
         public void SaveKnowledge(SantoriniQLearn ql)
         {
-            System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(SantoriniQLearn));
-
+            System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(SaveItem));
+            List<DictObject> dd = new List<DictObject>();
+            foreach (var item in ql.Policies)
+            {
+                DictObject d = new DictObject(item.Key, item.Value);
+                dd.Add(d);
+            }
+            SaveItem s = new SaveItem(dd);
             var path = "../../save" + ".xml";
 
             System.IO.FileStream file = System.IO.File.Create(path);
 
 
-            writer.Serialize(file, ql);
+            writer.Serialize(file, s);
 
             file.Close();
         }

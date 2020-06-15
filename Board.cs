@@ -99,7 +99,7 @@ namespace Santorini
                     int yeval = pawn.Y + item.Y;
                     foreach (var build in GetMovesInAllDirections())
                     {
-                        if (IsWithinBounds(new Pawn() { X = xeval, Y = yeval }, build.X, build.Y) && CanBuild(xeval + build.X, yeval + build.Y))
+                        if (IsWithinBounds(new Pawn() { X = xeval, Y = yeval }, build.X, build.Y) && CanBuild(xeval + build.X, yeval + build.Y,pawn.X,pawn.Y))
                         {
                             PawnMove pwn = new PawnMove(xeval, yeval, xeval + build.X, yeval + build.Y, pawn.X,pawn.Y);
                             if (pwn.X == pwn.PawnPosX && pwn.Y == pwn.PawnPosY)
@@ -119,14 +119,14 @@ namespace Santorini
         private List<PawnMove> GetMovesInAllDirections()
         {
             List<PawnMove> moves = new List<PawnMove>() {
+            /*new PawnMove(-1,1),
+            new PawnMove(-1,-1),
+           new PawnMove(1,1),
+            new PawnMove(1,-1),*/
                 new PawnMove(-1,0),
-          //  new PawnMove(-1,1),
             new PawnMove(0,1),
-           // new PawnMove(1,1),
             new PawnMove(1,0),
-           // new PawnMove(1,-1),
             new PawnMove(0,-1),
-           // new PawnMove(-1,-1),
             new PawnMove(-1,0)
             };
             return moves;
@@ -151,7 +151,7 @@ namespace Santorini
             return false;
         }
 
-        private bool CanBuild(int x, int y)
+        private bool CanBuild(int x, int y, int pawnoriginx, int pawnoriginy)
         {
             if (BoardState[x, y, 0] < 3 && BoardState[x, y, 1] == 0)
             {
@@ -159,7 +159,7 @@ namespace Santorini
             }
             else
             {
-                if (BoardState[x, y, 1] == 0)
+                if (BoardState[x, y, 1] == 0 || x == pawnoriginx && y == pawnoriginy)
                 {
                     return true;
                 }
@@ -176,9 +176,28 @@ namespace Santorini
             {
                 return false;
             }
+            if (BoardState[xeval,yeval,0] == 4)
+            {
+                return false;
+            }
             return true;
         }
 
+        //tag hele brættet med
+        //public string GetBoardStateString()
+        //{
+        //    string res = "";
+        //    for (int x = 0; x < 3; x++)
+        //    {
+        //        for (int i = 0; i < 3; i++)
+        //        {
+        //            res += BoardState[x, i, 0];
+        //            res += BoardState[x, i, 1];
+        //        }
+        //    }
+        //    return res;
+
+        //}
         public string GetBoardStateString()
         {
             string res = "";
@@ -217,15 +236,15 @@ namespace Santorini
             myPawn.X = move.X;
             myPawn.Y = move.Y;
             BoardState[move.X, move.Y, 1] = myPawn.PlayerNumber;
-            if (BoardState[move.XBuild, move.YBuild, 0] < 3)
+            if (BoardState[move.XBuild, move.YBuild, 0] <= 3)
             {
                 BoardState[move.XBuild, move.YBuild, 0]++;
             }
-            else
-            {
-                BoardState[move.XBuild, move.YBuild, 1] = 3;
+            //else
+            //{
+            //    BoardState[move.XBuild, move.YBuild, 1] = 3;
 
-            }
+            //}
          //   DrawBoard();
         }
     }
