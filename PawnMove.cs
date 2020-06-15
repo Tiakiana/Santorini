@@ -22,6 +22,7 @@
         public int Y;
         public float Utility = 0;
         public int XBuild, YBuild;
+        public int BuildDirectionX, BuildDirectionY;
         //public Pawn MyPawn;
         public int PawnPosX, PawnPosY;
 

@@ -102,6 +102,8 @@ namespace Santorini
                         if (IsWithinBounds(new Pawn() { X = xeval, Y = yeval }, build.X, build.Y) && CanBuild(xeval + build.X, yeval + build.Y,pawn.X,pawn.Y))
                         {
                             PawnMove pwn = new PawnMove(xeval, yeval, xeval + build.X, yeval + build.Y, pawn.X,pawn.Y);
+                            pwn.BuildDirectionX = build.X;
+                            pwn.BuildDirectionY = build.Y;
                             if (pwn.X == pwn.PawnPosX && pwn.Y == pwn.PawnPosY)
                             {
                                 Console.WriteLine("Vagt I gevær");

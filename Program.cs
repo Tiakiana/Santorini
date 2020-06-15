@@ -218,10 +218,12 @@ namespace Santorini
         {
             Board b = new Board();
             SantoriniNAN nn = new SantoriniNAN();
-            nn.FeedForward(b.BoardState,1);
+            Player player1 = new Player();
+            player1.Pawns.Add(new Pawn(0, 0, 1));
+            nn.TakeTurn(b,player1);
 
 
-            //PlaySantorini();
+            PlaySantorini();
         }
 
         public static void PlaySantorini()
@@ -231,6 +233,7 @@ namespace Santorini
             SantoriniQLearn quintin2 = new SantoriniQLearn();
             SantoriniPseudoRandom randy = new SantoriniPseudoRandom(Rnd.Range(0, 5000));
             SantoriniUtilityAI Ursa = new SantoriniUtilityAI();
+            SantoriniNAN Nana = new SantoriniNAN();
 
             WinRatio wins = new WinRatio();
             WinRatio winsIncremental = new WinRatio();
@@ -254,20 +257,20 @@ namespace Santorini
                 int timesINeedToWin = 3;
                 bool ActivateIntelligentOpponent = false;
                 //Visuals
-                if (i % 100000 == 0)
+                if (i % 1000 == 0)
                 {
 
                     Console.Clear();
                     //quintin1.ExplorationChance--;
-                    if (doneExploring)
-                    {
-                        quintin1.ExplorationChance = 0;
-                        yx++;
-                    }
-                    if (yx > 7)
-                    {
-                        doneTraining = true;
-                    }
+                    //if (doneExploring)
+                    //{
+                    //    quintin1.ExplorationChance = 0;
+                    //    yx++;
+                    //}
+                    //if (yx > 7)
+                    //{
+                    //    doneTraining = true;
+                    //}
                     //if (i%900000 == 0)
                     //{
                     //    quintin1.ExplorationChance = 0;
@@ -278,17 +281,17 @@ namespace Santorini
                     Console.WriteLine("Exploration chance: " + quintin1.ExplorationChance);
 
                     //Hvor mange nye stadier skal vi over før vi kan gå igang med at spille?
-                    if (MathF.Abs(winsIncremental.Draw - quintin1.Policies.Count) < 500000)
-                    {
-                        ProgressBarMine += "\nsaving";
-                        //p.SaveKnowledge(quintin1);
-                        ProgressBarMine += "\n Done saving";
+                    //if (MathF.Abs(winsIncremental.Draw - quintin1.Policies.Count) < 500000)
+                    //{
+                    //    ProgressBarMine += "\nsaving";
+                    //    //p.SaveKnowledge(quintin1);
+                    //    ProgressBarMine += "\n Done saving";
 
 
-                        doneExploring = true;
-                    }
+                    //    doneExploring = true;
+                    //}
 
-                    winsIncremental.Draw = quintin1.Policies.Count;
+               //     winsIncremental.Draw = quintin1.Policies.Count;
                     winsIncremental.Player2 = 0;
                     winsIncremental.Player1 = 0;
                     if (!ActivateIntelligentOpponent && winsIncremental.Player2 > 7600)
@@ -315,16 +318,16 @@ namespace Santorini
                         //    Console.WriteLine("Player 2 killed player 1");
                         wins.Player2++;
                         winsIncremental.Player2++;
-                        if (ActivateIntelligentOpponent)
-                        {
-                            quintin2.Reward(-1);
-                        }
-                        quintin1.Reward(-1);
+                        //if (ActivateIntelligentOpponent)
+                        //{
+                        //    quintin2.Reward(-1);
+                        //}
+                        //quintin1.Reward(-1);
 
                     }
                     else
                     {
-                        b.MakeMove(quintin1.TakeTurn(b, player1), player1.Pawns[0]);
+                        b.MakeMove(Nana.TakeTurn(b, player1), player1.Pawns[0]);
 
                         if (printstuff)
                         {
@@ -353,13 +356,13 @@ namespace Santorini
                         if (b.GetAvailableMoveForPlayer(player2).Count == 0)
                         {
                             winner = true;
-                            wins.Player1++;
-                            winsIncremental.Player1++;
-                            if (ActivateIntelligentOpponent)
-                            {
-                                quintin2.Reward(10);
-                            }
-                            quintin1.Reward(1);
+                            //wins.Player1++;
+                            //winsIncremental.Player1++;
+                            //if (ActivateIntelligentOpponent)
+                            //{
+                            //    quintin2.Reward(10);
+                            //}
+                            //quintin1.Reward(1);
 
                             //        Console.WriteLine("Player 1 killed player 2");
                         }
@@ -368,7 +371,7 @@ namespace Santorini
                             //                      MAKE DET MOVE MOND!
                             if (doneExploring)
                             {
-                                b.MakeMove(Ursa.TakeTurn(b.GetAvailableMoveForPlayer(player2), b), player2.Pawns[0]);
+                                b.MakeMove(randy.TakeTurn(b.GetAvailableMoveForPlayer(player2), b), player2.Pawns[0]);
                             }
                             else
                             {
